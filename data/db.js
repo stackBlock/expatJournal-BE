@@ -6,6 +6,7 @@ module.exports = {
     findStories,
     findStoryByUser,
     findStoryById,
+    newStory,
     getProject,
     getActions,
     getBoth,
@@ -24,17 +25,30 @@ function findStoryById(id) {
         .first();
 }
 
-// function findStoryByUser(id) {
-//     return db('stories')
-//         .where({ user: id })
-//         .first();
-// }
 
 function findStoryByUser(id) {
     return db('stories')
         .select(['*'])
         .from('stories')
         .where({ user: id })
+}
+
+function newStory(story) {
+    return db('stories')
+        .insert(story)
+        .then(ids => ({ id: ids[0] }));
+}
+
+function update(id, story) {
+    return db('stories')
+        .where({ id: id })
+        .update(story);
+}
+
+function remove(id) {
+    return db('stories')
+        .where({ id: id })
+        .del();
 }
 
 
@@ -68,14 +82,14 @@ function insert(project) {
         .then(ids => ({ id: ids[0] }));
 }
 
-function update(id, project) {
-    return db('projects')
-        .where({ id: id })
-        .update(project);
-}
+// function update(id, project) {
+//     return db('projects')
+//         .where({ id: id })
+//         .update(project);
+// }
 
-function remove(id) {
-    return db('projects')
-        .where({ id: id })
-        .del();
-}
+// function remove(id) {
+//     return db('projects')
+//         .where({ id: id })
+//         .del();
+// }
