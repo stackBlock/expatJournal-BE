@@ -7,12 +7,16 @@ module.exports = {
     findStoryByUser,
     findStoryById,
     newStory,
-    getProject,
-    getActions,
-    getBoth,
-    insert,
     update,
-    remove
+    remove,
+    find,
+    findBy,
+    add,
+    findById
+    // getProject,
+    // getActions,
+    // getBoth,
+    // insert
 };
 
 function findStories() {
@@ -51,45 +55,56 @@ function remove(id) {
         .del();
 }
 
-
-function getProject(id) {
-    return db('projects')
-        .select(['*'])
-        .from('projects')
-        .where({ id: id });
+function find() {
+    return db('users').select('id', 'username', 'password');
 }
 
-function getActions(id) {
-    return db('actions')
-        .select('id', 'actions.description', 'notes', 'completed')
-        .from('actions')
-        .where({ action_id: id });
-
+function findBy(filter) {
+    return db('users').where(filter);
 }
 
-async function getBoth(id) {
-    let a = await getProject(id);
-    let b = await getActions(id);
-    return {
-        ...a,
-        actions: b
-    };
+function add(user) {
+    return db('users')
+        .insert(user, 'id')
+        .then(ids => {
+            const [id] = ids;
+            return findById(id);
+        });
 }
 
-function insert(project) {
-    return db('projects')
-        .insert(project)
-        .then(ids => ({ id: ids[0] }));
+function findById(id) {
+    return db('users')
+        .where({ id })
+        .first();
 }
 
-// function update(id, project) {
+
+// function getProject(id) {
 //     return db('projects')
-//         .where({ id: id })
-//         .update(project);
+//         .select(['*'])
+//         .from('projects')
+//         .where({ id: id });
 // }
 
-// function remove(id) {
+// function getActions(id) {
+//     return db('actions')
+//         .select('id', 'actions.description', 'notes', 'completed')
+//         .from('actions')
+//         .where({ action_id: id });
+
+// }
+
+// async function getBoth(id) {
+//     let a = await getProject(id);
+//     let b = await getActions(id);
+//     return {
+//         ...a,
+//         actions: b
+//     };
+// }
+
+// function insert(project) {
 //     return db('projects')
-//         .where({ id: id })
-//         .del();
+//         .insert(project)
+//         .then(ids => ({ id: ids[0] }));
 // }
